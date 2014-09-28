@@ -77,7 +77,11 @@ Processor::Processor(bool sim) : _loopMutex(QMutex::Recursive)
 	_refereeModule = std::make_shared<NewRefereeModule>(_state);
 	_refereeModule->start();
 	_gameplayModule = std::make_shared<Gameplay::GameplayModule>(&_state);
-	vision.simulation = _simulation;
+	//vision.simulation = _simulation;
+	vision.simulation = false;
+	if(sim) {
+		vision.port = SimVisionPort;
+	}
 }
 
 Processor::~Processor()
