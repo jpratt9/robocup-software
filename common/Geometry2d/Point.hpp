@@ -1,10 +1,11 @@
 #pragma once
 
-#include <math.h>
+#include <cmath>
 #include <boost/optional.hpp>
 #include <QtCore/QPointF>
 #include <protobuf/Point.pb.h>
 #include <sstream>
+#include <Eigen/Core>
 
 #include "util.h"
 
@@ -13,7 +14,7 @@ namespace Geometry2d
 	/**
 	Simple class to represent a point in 2d space. Uses floating point coordinates
 	*/
-	class Point
+	class Point: public Eigen::Vector2f
 	{
 		public:
 			/**
@@ -23,7 +24,8 @@ namespace Geometry2d
 			*/
 			Point()
 			{
-				x = y = 0;
+				x = (operator(0));
+				y = (operator(1));
 			}
 
 			/**
@@ -249,8 +251,8 @@ namespace Geometry2d
 			*/
 			void rotate(float angle)
 			{
-				float newX = x * cos(angle) - y * sin(angle);
-				float newY = y * cos(angle) + x * sin(angle);
+				float newX = x * std::cos(angle) - y * std::sin(angle);
+				float newY = y * std::cos(angle) + x * std::sin(angle);
 				x = newX;
 				y = newY;
 			}
@@ -260,8 +262,8 @@ namespace Geometry2d
 			 */
 			Point rotated(float angle) const
 			{
-				float newX = x * cos(angle) - y * sin(angle);
-				float newY = y * cos(angle) + x * sin(angle);
+				float newX = x * std::cos(angle) - y * std::sin(angle);
+				float newY = y * std::cos(angle) + x * std::sin(angle);
 				return Point(newX, newY);
 			}
 
@@ -322,7 +324,7 @@ namespace Geometry2d
 			*/
 			static Point direction(float theta)
 			{
-				return Point(cos(theta), sin(theta));
+				return Point(std::cos(theta), std::sin(theta));
 			}
 			
 			/** returns the perpendicular to the point, Clockwise */
@@ -350,7 +352,7 @@ namespace Geometry2d
 			/** returns the angle between the two points (radians) */
 			float angleTo(const Point& other) const
 			{
-				return acos(normalized().dot(other.normalized()));
+				return std::acos(normalized().dot(other.normalized()));
 			}
 			
 			float cross(const Point &other) const
@@ -371,10 +373,10 @@ namespace Geometry2d
 			}
 
 			/** the x coordinate */
-			float x;
+			float &x;
 			
 			/** the y coordinate */
-			float y;
+			float &y;
 	}; // \class Point
 
 	// global operations
